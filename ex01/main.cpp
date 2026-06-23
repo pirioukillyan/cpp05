@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Bureaucrat.hpp"
+#include "Form.hpp"
 #include <iostream>
 
 #define ASSERT_TEST(passed, message) \
@@ -28,30 +29,27 @@
 
 int	main(void)
 {
-	
-	std::cout << std::endl;
+    std::cout << std::endl;
 
     /************************************/
-    std::cout << MAGENTA << "TEST 1 - VALID CREATION" << NC << std::endl;
+    std::cout << MAGENTA << "TEST 1 - FORM CREATION VALID/INVALID" << NC << std::endl;
+
     try
     {
-        Bureaucrat a("Alice", 42);
-        std::cout << a << std::endl;
-        ASSERT_TEST(a.getGrade() == 42, "valid creation");
+        Form f1("TaxForm", 50, 30);
+        std::cout << f1 << std::endl;
+
+        ASSERT_TEST(f1.getGradeToSign() == 50, "gradeToSign ok");
+        ASSERT_TEST(f1.getGradeToExecute() == 30, "gradeToExecute ok");
     }
     catch (std::exception &e)
     {
         ASSERT_TEST(false, e.what());
     }
 
-    std::cout << std::endl;
-
-    /************************************/
-    std::cout << MAGENTA << "TEST 2 - INVALID CREATION" << NC << std::endl;
-
     try
     {
-        Bureaucrat a("Alice", 0);
+        Form f2("BadForm", 0, 30);
         ASSERT_TEST(false, "grade 0 should throw");
     }
     catch (std::exception &e)
@@ -61,7 +59,7 @@ int	main(void)
 
     try
     {
-        Bureaucrat b("Bob", 151);
+        Form f3("BadForm2", 50, 151);
         ASSERT_TEST(false, "grade 151 should throw");
     }
     catch (std::exception &e)
@@ -72,18 +70,16 @@ int	main(void)
     std::cout << std::endl;
 
     /************************************/
-    std::cout << MAGENTA << "TEST 3 - COPY CONSTRUCTOR" << NC << std::endl;
+    std::cout << MAGENTA << "TEST 2 - SIGN SUCCESS" << NC << std::endl;
 
     try
     {
-        Bureaucrat a("Alice", 10);
-        Bureaucrat copy(a);
+        Bureaucrat b("Alice", 10);
+        Form f("FormA", 50, 20);
 
-        ASSERT_TEST(copy.getName() == a.getName(), "name copy");
-        ASSERT_TEST(copy.getGrade() == a.getGrade(), "grade copy");
+        b.signForm(f);
 
-        std::cout << "original: " << a << std::endl;
-        std::cout << "copy:     " << copy << std::endl;
+        ASSERT_TEST(f.getIsSigned() == true, "form should be signed");
     }
     catch (std::exception &e)
     {
@@ -93,22 +89,16 @@ int	main(void)
     std::cout << std::endl;
 
     /************************************/
-    std::cout << MAGENTA << "TEST 4 - OPERATOR =" << NC << std::endl;
+    std::cout << MAGENTA << "TEST 3 - SIGN FAIL (GRADE TOO LOW)" << NC << std::endl;
 
     try
     {
-        Bureaucrat a("Alice", 10);
         Bureaucrat b("Bob", 100);
+        Form f("FormB", 50, 20);
 
-        b = a;
+        b.signForm(f);
 
-        ASSERT_TEST(b.getGrade() == 10, "operator= grade");
-
-        // name must NOT change (const rule)
-        ASSERT_TEST(b.getName() == "Bob", "operator= name stays same");
-
-        std::cout << "a: " << a << std::endl;
-        std::cout << "b: " << b << std::endl;
+        ASSERT_TEST(f.getIsSigned() == false, "form should NOT be signed");
     }
     catch (std::exception &e)
     {
@@ -118,24 +108,22 @@ int	main(void)
     std::cout << std::endl;
 
     /************************************/
-    std::cout << MAGENTA << "TEST 5 - INCREMENT / DECREMENT" << NC << std::endl;
+    std::cout << MAGENTA << "TEST 4 - EDGE CASES" << NC << std::endl;
 
     try
     {
-        Bureaucrat a("Alice", 2);
+        Bureaucrat top("Top", 1);
+        Bureaucrat low("Low", 150);
 
-        a.incrementGrade(1);
-        ASSERT_TEST(a.getGrade() == 1, "increment to 1");
+        Form f("EdgeForm", 1, 150);
 
-        try
-        {
-            a.incrementGrade(1); // should throw
-            ASSERT_TEST(false, "increment above 1 should throw");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(true, e.what());
-        }
+        top.signForm(f);
+        ASSERT_TEST(f.getIsSigned() == true, "top can sign");
+
+        Form f2("EdgeForm2", 1, 150);
+
+        low.signForm(f2);
+        ASSERT_TEST(f2.getIsSigned() == false, "low cannot sign grade 1 form");
     }
     catch (std::exception &e)
     {
@@ -144,27 +132,23 @@ int	main(void)
 
     std::cout << std::endl;
 
+    /************************************/
+    std::cout << MAGENTA << "TEST 5 - COPY / PRINT" << NC << std::endl;
+
     try
     {
-        Bureaucrat b("Bob", 149);
+        Form f("Original", 42, 20);
+        Form copy(f);
 
-        b.decrementGrade(1);
-        ASSERT_TEST(b.getGrade() == 150, "decrement to 150");
-
-        try
-        {
-            b.decrementGrade(1); // should throw
-            ASSERT_TEST(false, "decrement below 150 should throw");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(true, e.what());
-        }
+        ASSERT_TEST(copy.getName() == f.getName(), "copy name");
+        ASSERT_TEST(copy.getGradeToSign() == f.getGradeToSign(), "copy grade sign");
+        ASSERT_TEST(copy.getGradeToExecute() == f.getGradeToExecute(), "copy grade exec");
     }
     catch (std::exception &e)
     {
         ASSERT_TEST(false, e.what());
     }
+
 
 	return 0;
 }
