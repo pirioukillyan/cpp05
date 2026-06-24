@@ -13,7 +13,10 @@
 #include "Bureaucrat.hpp"
 #include "AForm.hpp"
 #include "ShrubberyCreationForm.hpp"
+#include "RobotomyRequestForm.hpp"
 #include <iostream>
+#include <ctime>
+#include <cstdlib>
 
 #define ASSERT_TEST(passed, message) \
 	if (passed) { std::cout << GREEN << "TEST PASSED" << NC << std::endl; } \
@@ -31,68 +34,106 @@
 int	main(void)
 {
 	/************************************/
-	std::cout << std::endl;
-	{
-		std::cout << MAGENTA << "TEST SHRUBBERY CREATION FORM" << NC << std::endl;
+	std::srand(std::time(NULL));
 
-		try
-		{
-			Bureaucrat boss("Boss", 1);
-			ShrubberyCreationForm form("garden");
+    std::cout << std::endl;
+    std::cout << MAGENTA << "TEST ROBOTOMY REQUEST FORM" << NC << std::endl;
 
-			std::cout << form << std::endl;
+    {
+        try
+        {
+            Bureaucrat boss("Boss", 1);
+            RobotomyRequestForm form("Marvin");
 
-			boss.signForm(form);
-			boss.executeForm(form);
+            std::cout << form << std::endl;
 
-			ASSERT_TEST(form.getIsSigned() == true,
-				"ShrubberyCreationForm signed");
-		}
-		catch (std::exception &e)
-		{
-			ASSERT_TEST(false, e.what());
-		}
-	}
-	std::cout << std::endl;
-	{
-		std::cout << MAGENTA << "TEST SHRUBBERY WITHOUT SIGNATURE" << NC << std::endl;
+            boss.signForm(form);
 
-		try
-		{
-			Bureaucrat boss("Boss", 1);
-			ShrubberyCreationForm form("garden");
+            // On teste plusieurs exécutions pour voir le 50%
+            for (int i = 0; i < 5; i++)
+            {
+                std::cout << "\nExecution " << i + 1 << ":\n";
+                boss.executeForm(form);
+            }
 
-			boss.executeForm(form);
+            ASSERT_TEST(form.getIsSigned() == true, "form should be signed");
+        }
+        catch (std::exception &e)
+        {
+            ASSERT_TEST(false, e.what());
+        }
+    }
 
-			ASSERT_TEST(false, "execution should fail (not signed)");
-		}
-		catch (std::exception &e)
-		{
-			ASSERT_TEST(true, e.what());
-		}
-	}
-	std::cout << std::endl;
-	{
-		std::cout << MAGENTA << "TEST SHRUBBERY LOW GRADE" << NC << std::endl;
+    std::cout << std::endl;
 
-		try
-		{
-			Bureaucrat intern("Intern", 150);
-			ShrubberyCreationForm form("garden");
+    std::cout << MAGENTA << "TEST ROBOTOMY WITHOUT SIGNATURE" << NC << std::endl;
 
-			intern.signForm(form);
-			intern.executeForm(form);
+    {
+        try
+        {
+            Bureaucrat boss("Boss", 1);
+            RobotomyRequestForm form("Marvin");
 
-			ASSERT_TEST(false,
-				"Low grade bureaucrat should fail");
-		}
-		catch (std::exception &e)
-		{
-			std::cout << e.what() << std::endl;
-			ASSERT_TEST(true,
-				"Exception thrown for low grade");
-		}
-	}
+            boss.executeForm(form);
+
+            ASSERT_TEST(false, "execution should fail (not signed)");
+        }
+        catch (std::exception &e)
+        {
+            ASSERT_TEST(true, e.what());
+        }
+    }
+
+    std::cout << std::endl;
+
+    std::cout << MAGENTA << "TEST ROBOTOMY LOW GRADE" << NC << std::endl;
+
+    {
+        try
+        {
+            Bureaucrat intern("Intern", 150);
+            RobotomyRequestForm form("Marvin");
+
+            intern.signForm(form);
+            intern.executeForm(form);
+
+            ASSERT_TEST(false, "low grade should fail");
+        }
+        catch (std::exception &e)
+        {
+            ASSERT_TEST(true, e.what());
+        }
+    }
+
+    std::cout << std::endl;
+
+    std::cout << MAGENTA << "TEST ROBOTOMY MULTIPLE TARGETS" << NC << std::endl;
+
+    {
+        try
+        {
+            Bureaucrat boss("Boss", 1);
+
+            RobotomyRequestForm a("Alice");
+            RobotomyRequestForm b("Bob");
+            RobotomyRequestForm c("Charlie");
+
+            boss.signForm(a);
+            boss.signForm(b);
+            boss.signForm(c);
+
+            boss.executeForm(a);
+            boss.executeForm(b);
+            boss.executeForm(c);
+
+            ASSERT_TEST(true, "multiple robotomies executed");
+        }
+        catch (std::exception &e)
+        {
+            ASSERT_TEST(false, e.what());
+        }
+    }
+
 	
 	return 0;
 }
