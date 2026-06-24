@@ -23,7 +23,7 @@ AForm::AForm(std::string const name, int const gradeToSign, int const gradeToExe
 		throw AForm::GradeTooLowException();
 }
 
-AForm::AForm(void) : _name("unamed"), _isSigned(false), _gradeToSign(150), _gradeToExecute(150) {}
+AForm::AForm(void) : _name("unamed Form"), _isSigned(false), _gradeToSign(150), _gradeToExecute(150) {}
 
 AForm::AForm(AForm const & src) : _name(src._name), _isSigned(src._isSigned),
 		_gradeToSign(src._gradeToSign), _gradeToExecute(src._gradeToExecute) {}
@@ -66,11 +66,18 @@ void	AForm::beSigned(Bureaucrat const & b)
 		throw AForm::GradeTooLowException();
 }
 
+void	AForm::checkExecution(Bureaucrat const & executor) const
+{
+	if (!_isSigned)
+		throw AForm::FormNotSignedException();
+	if (executor.getGrade() > _gradeToExecute)
+		throw AForm::GradeTooLowException();
+}
+
 std::ostream &	operator<<(std::ostream& out, AForm const & f)
 {
 	out << f.getName() << ", grade to sign " << f.getGradeToSign()
-		<< ", grade to execute " << f.getGradeToExecute()
-		<< ", is ";
+		<< ", grade to execute " << f.getGradeToExecute() << ", is ";
 	if (!f.getIsSigned())
 		out << "NOT ";
 	out << "signed." << std::endl;

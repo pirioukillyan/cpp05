@@ -23,7 +23,7 @@ Form::Form(std::string const name, int const gradeToSign, int const gradeToExecu
 		throw Form::GradeTooLowException();
 }
 
-Form::Form(void) : _name("unamed"), _isSigned(false), _gradeToSign(150), _gradeToExecute(150) {}
+Form::Form(void) : _name("unamed Form"), _isSigned(false), _gradeToSign(150), _gradeToExecute(150) {}
 
 Form::Form(Form const & src) : _name(src._name), _isSigned(src._isSigned),
 		_gradeToSign(src._gradeToSign), _gradeToExecute(src._gradeToExecute) {}

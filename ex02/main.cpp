@@ -11,7 +11,8 @@
 /* ************************************************************************** */
 
 #include "Bureaucrat.hpp"
-#include "Form.hpp"
+#include "AForm.hpp"
+#include "ShrubberyCreationForm.hpp"
 #include <iostream>
 
 #define ASSERT_TEST(passed, message) \
@@ -29,126 +30,29 @@
 
 int	main(void)
 {
-    std::cout << std::endl;
+	/************************************/
+	std::cout << std::endl;
+	{
+		std::cout << MAGENTA << "TEST SHRUBBERY CREATION FORM" << NC << std::endl;
 
-    /************************************/
-    std::cout << MAGENTA << "TEST 1 - FORM CREATION VALID/INVALID" << NC << std::endl;
+		try
+		{
+			Bureaucrat boss("Boss", 1);
+			ShrubberyCreationForm form("garden");
 
-    try
-    {
-        Form f1("TaxForm", 50, 30);
-        std::cout << f1 << std::endl;
+			std::cout << form << std::endl;
 
-        ASSERT_TEST(f1.getGradeToSign() == 50, "gradeToSign ok");
-        ASSERT_TEST(f1.getGradeToExecute() == 30, "gradeToExecute ok");
-    }
-    catch (std::exception &e)
-    {
-        ASSERT_TEST(false, e.what());
-    }
+			boss.signForm(form);
+			boss.executeForm(form);
 
-    try
-    {
-        Form f2("BadForm", 0, 30);
-        ASSERT_TEST(false, "grade 0 should throw");
-    }
-    catch (std::exception &e)
-    {
-        ASSERT_TEST(true, e.what());
-    }
-
-    try
-    {
-        Form f3("BadForm2", 50, 151);
-        ASSERT_TEST(false, "grade 151 should throw");
-    }
-    catch (std::exception &e)
-    {
-        ASSERT_TEST(true, e.what());
-    }
-
-    std::cout << std::endl;
-
-    /************************************/
-    std::cout << MAGENTA << "TEST 2 - SIGN SUCCESS" << NC << std::endl;
-
-    try
-    {
-        Bureaucrat b("Alice", 10);
-        Form f("FormA", 50, 20);
-
-        b.signForm(f);
-
-        ASSERT_TEST(f.getIsSigned() == true, "form should be signed");
-    }
-    catch (std::exception &e)
-    {
-        ASSERT_TEST(false, e.what());
-    }
-
-    std::cout << std::endl;
-
-    /************************************/
-    std::cout << MAGENTA << "TEST 3 - SIGN FAIL (GRADE TOO LOW)" << NC << std::endl;
-
-    try
-    {
-        Bureaucrat b("Bob", 100);
-        Form f("FormB", 50, 20);
-
-        b.signForm(f);
-
-        ASSERT_TEST(f.getIsSigned() == false, "form should NOT be signed");
-    }
-    catch (std::exception &e)
-    {
-        ASSERT_TEST(false, e.what());
-    }
-
-    std::cout << std::endl;
-
-    /************************************/
-    std::cout << MAGENTA << "TEST 4 - EDGE CASES" << NC << std::endl;
-
-    try
-    {
-        Bureaucrat top("Top", 1);
-        Bureaucrat low("Low", 150);
-
-        Form f("EdgeForm", 1, 150);
-
-        top.signForm(f);
-        ASSERT_TEST(f.getIsSigned() == true, "top can sign");
-
-        Form f2("EdgeForm2", 1, 150);
-
-        low.signForm(f2);
-        ASSERT_TEST(f2.getIsSigned() == false, "low cannot sign grade 1 form");
-    }
-    catch (std::exception &e)
-    {
-        ASSERT_TEST(false, e.what());
-    }
-
-    std::cout << std::endl;
-
-    /************************************/
-    std::cout << MAGENTA << "TEST 5 - COPY / PRINT" << NC << std::endl;
-
-    try
-    {
-        Form f("Original", 42, 20);
-        Form copy(f);
-
-        ASSERT_TEST(copy.getName() == f.getName(), "copy name");
-        ASSERT_TEST(copy.getGradeToSign() == f.getGradeToSign(), "copy grade sign");
-        ASSERT_TEST(copy.getGradeToExecute() == f.getGradeToExecute(), "copy grade exec");
-    }
-    catch (std::exception &e)
-    {
-        ASSERT_TEST(false, e.what());
-    }
-
+			ASSERT_TEST(form.getIsSigned() == true,
+				"ShrubberyCreationForm signed");
+		}
+		catch (std::exception &e)
+		{
+			ASSERT_TEST(false, e.what());
+		}
+	}
 
 	return 0;
 }
