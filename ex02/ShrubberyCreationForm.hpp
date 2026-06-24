@@ -29,6 +29,15 @@ class ShrubberyCreationForm : public AForm
 
 		void	execute(Bureaucrat const & executor) const;
 
+		class FileNotAccess : public std::exception
+		{
+			public:
+				const char* what() const throw()
+				{
+					return "Not file access.";
+				}
+		};
+
 };
 
 #endif

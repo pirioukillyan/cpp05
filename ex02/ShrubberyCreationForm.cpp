@@ -36,12 +36,15 @@ void	ShrubberyCreationForm::execute(Bureaucrat const & executor) const
 	checkExecution(executor);
 
 	std::ofstream out((_target + "_shrubbery").c_str());
+	if (!out)
+		throw FileNotAccess();
+
 	out <<
 	"                      ___\n"
 	"                _,-'\"\"   \"\"\"\"`--.\n"
 	"             ,-'          __,,-- \\\n"
 	"           ,'    __,--\"\"\"\"dF      )\n"
-	"          /   .-\"Hb_,--""dF        /\n"
+	"          /   .-\"Hb_,--\"\"dF      /\n"
 	"        ,'       _Hb ___dF\"-._,-'\n"
 	"      ,'      _,-\"\"\"\"   \"\"--..__\n"
 	"     (     ,-'                  `.\n"
@@ -59,7 +62,7 @@ void	ShrubberyCreationForm::execute(Bureaucrat const & executor) const
 	"                  dHHHb\n"
 	"                .dFd|bHb.               o\n"
 	"      o       .dHFdH|HbTHb.          o /\n"
-	"\\  Y  |  \\__,dHHFdHH|HHhoHHb.__Krogg  Y\n"
+	"\\  Y  |  \\__,dHHFdHH|HHhoHHb.__kpiriou  \n"
 	"##########################################\n";
 	out.close();
 

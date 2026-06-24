@@ -18,9 +18,9 @@ AForm::AForm(std::string const name, int const gradeToSign, int const gradeToExe
 	: _name(name), _isSigned(false), _gradeToSign(gradeToSign), _gradeToExecute(gradeToExecute)
 {
 	if (gradeToSign < 1 || gradeToExecute < 1)
-		throw AForm::GradeTooHighException();
+		throw GradeTooHighException();
 	if (gradeToSign > 150 || gradeToExecute > 150)
-		throw AForm::GradeTooLowException();
+		throw GradeTooLowException();
 }
 
 AForm::AForm(void) : _name("unamed Form"), _isSigned(false), _gradeToSign(150), _gradeToExecute(150) {}
@@ -63,15 +63,15 @@ void	AForm::beSigned(Bureaucrat const & b)
 	if (b.getGrade() <= _gradeToSign)
 		_isSigned = true;
 	else
-		throw AForm::GradeTooLowException();
+		throw GradeTooLowException();
 }
 
 void	AForm::checkExecution(Bureaucrat const & executor) const
 {
 	if (!_isSigned)
-		throw AForm::FormNotSignedException();
+		throw FormNotSignedException();
 	if (executor.getGrade() > _gradeToExecute)
-		throw AForm::GradeTooLowException();
+		throw GradeTooLowException();
 }
 
 std::ostream &	operator<<(std::ostream& out, AForm const & f)

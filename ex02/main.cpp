@@ -53,6 +53,46 @@ int	main(void)
 			ASSERT_TEST(false, e.what());
 		}
 	}
+	std::cout << std::endl;
+	{
+		std::cout << MAGENTA << "TEST SHRUBBERY WITHOUT SIGNATURE" << NC << std::endl;
 
+		try
+		{
+			Bureaucrat boss("Boss", 1);
+			ShrubberyCreationForm form("garden");
+
+			boss.executeForm(form);
+
+			ASSERT_TEST(false, "execution should fail (not signed)");
+		}
+		catch (std::exception &e)
+		{
+			ASSERT_TEST(true, e.what());
+		}
+	}
+	std::cout << std::endl;
+	{
+		std::cout << MAGENTA << "TEST SHRUBBERY LOW GRADE" << NC << std::endl;
+
+		try
+		{
+			Bureaucrat intern("Intern", 150);
+			ShrubberyCreationForm form("garden");
+
+			intern.signForm(form);
+			intern.executeForm(form);
+
+			ASSERT_TEST(false,
+				"Low grade bureaucrat should fail");
+		}
+		catch (std::exception &e)
+		{
+			std::cout << e.what() << std::endl;
+			ASSERT_TEST(true,
+				"Exception thrown for low grade");
+		}
+	}
+	
 	return 0;
 }
