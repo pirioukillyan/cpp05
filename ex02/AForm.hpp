@@ -31,7 +31,7 @@ class AForm
 		AForm(void);
 		AForm(AForm const & src);
 		AForm&	operator=(AForm const & rhs);
-		~AForm(void);
+		virtual ~AForm(void);
 
 		std::string const &	getName(void) const;
 		int const &			getGradeToSign(void) const;
