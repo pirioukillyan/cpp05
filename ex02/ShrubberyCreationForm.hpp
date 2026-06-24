@@ -20,15 +20,6 @@ class ShrubberyCreationForm : public AForm
 	private:
 		std::string	_target;
 
-	public:
-		ShrubberyCreationForm(std::string const target);
-		ShrubberyCreationForm(void);
-		ShrubberyCreationForm(ShrubberyCreationForm const & src);
-		ShrubberyCreationForm&	operator=(ShrubberyCreationForm const & rhs);
-		~ShrubberyCreationForm(void);
-
-		void	execute(Bureaucrat const & executor) const;
-
 		class FileNotAccess : public std::exception
 		{
 			public:
@@ -37,6 +28,15 @@ class ShrubberyCreationForm : public AForm
 					return "Not file access.";
 				}
 		};
+
+	public:
+		ShrubberyCreationForm(std::string const & target);
+		ShrubberyCreationForm(void);
+		ShrubberyCreationForm(ShrubberyCreationForm const & src);
+		ShrubberyCreationForm&	operator=(ShrubberyCreationForm const & rhs);
+		~ShrubberyCreationForm(void);
+
+		void	execute(Bureaucrat const & executor) const;
 
 };
 

@@ -15,17 +15,30 @@
 #include <iostream>
 #include <fstream>
 
-ShrubberyCreationForm::ShrubberyCreationForm(std::string const target)
-	: AForm("ShrubberyCreationForm", 145, 137), _target(target) {}
+ShrubberyCreationForm::ShrubberyCreationForm(std::string const & target)
+	: AForm("ShrubberyCreationForm", 145, 137), _target(target)
+{
+	if (_target.empty())
+		throw std::invalid_argument("Target must be specified");
+}
 
 ShrubberyCreationForm::ShrubberyCreationForm(void)
-	: AForm("ShrubberyCreationForm", 145, 137), _target("not_target") {}
+	: AForm("ShrubberyCreationForm", 145, 137), _target("") {}
 
-ShrubberyCreationForm::ShrubberyCreationForm(ShrubberyCreationForm const & src) : AForm(src), _target(src._target) {}
+ShrubberyCreationForm::ShrubberyCreationForm(ShrubberyCreationForm const & src) : AForm(src), _target(src._target)
+{
+	if (_target.empty())
+		throw std::invalid_argument("Target must be specified");
+}
 
 ShrubberyCreationForm&	ShrubberyCreationForm::operator=(ShrubberyCreationForm const & rhs) {
 	if (this != &rhs)
+	{
+		AForm::operator=(rhs);
+		if (rhs._target.empty())
+			throw std::invalid_argument("Target must be specified");
 		_target = rhs._target;
+	}
 	return *this;
 }
 

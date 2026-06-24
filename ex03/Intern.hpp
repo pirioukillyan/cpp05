@@ -13,6 +13,10 @@
 #ifndef INTERN_HPP
 # define INTERN_HPP
 
+# include <string>
+
+class AForm;
+
 class Intern
 {
 	private:
@@ -22,6 +26,8 @@ class Intern
 		Intern(Intern const & src);
 		Intern &	operator=(Intern const & rhs);
 		~Intern(void);
+
+		AForm*	makeForm(std::string const & formName, std::string const & target) const;
 
 };
 

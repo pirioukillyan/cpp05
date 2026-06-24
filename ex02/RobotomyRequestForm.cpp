@@ -15,18 +15,32 @@
 #include <iostream>
 #include <cstdlib>
 
-RobotomyRequestForm::RobotomyRequestForm(std::string target)
-    : AForm("RobotomyRequestForm", 72, 45), _target(target) {}
+RobotomyRequestForm::RobotomyRequestForm(std::string const & target)
+    : AForm("RobotomyRequestForm", 72, 45), _target(target)
+{
+	if (_target.empty())
+		throw std::invalid_argument("Target must be specified");
+}
 
-RobotomyRequestForm::RobotomyRequestForm(void) : _target("not_target") {}
+RobotomyRequestForm::RobotomyRequestForm(void)
+	: AForm("RobotomyRequestForm", 72, 45), _target("") {}
 
 RobotomyRequestForm::RobotomyRequestForm(RobotomyRequestForm const & src)
-    : AForm(src), _target(src._target) {}
+    : AForm(src), _target(src._target)
+{
+	if (_target.empty())
+		throw std::invalid_argument("Target must be specified");
+}
 
 RobotomyRequestForm &	RobotomyRequestForm::operator=(RobotomyRequestForm const & rhs)
 {
 	if (this != &rhs)
+	{
+		AForm::operator=(rhs);
+		if (rhs._target.empty())
+			throw std::invalid_argument("Target must be specified");
 		_target = rhs._target;
+	}
 	return *this;
 }
 
