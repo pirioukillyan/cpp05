@@ -41,6 +41,7 @@ RobotomyRequestForm &	RobotomyRequestForm::operator=(RobotomyRequestForm const &
 			throw std::invalid_argument("Target must be specified");
 		_target = rhs._target;
 	}
+	return *this;
 }
 
 RobotomyRequestForm::~RobotomyRequestForm(void) {}
