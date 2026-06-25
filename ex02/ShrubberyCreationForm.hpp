@@ -29,14 +29,15 @@ class ShrubberyCreationForm : public AForm
 				}
 		};
 
+	protected:
+		void	executeAction(void) const;
+
 	public:
 		ShrubberyCreationForm(std::string const & target);
 		ShrubberyCreationForm(void);
 		ShrubberyCreationForm(ShrubberyCreationForm const & src);
 		ShrubberyCreationForm&	operator=(ShrubberyCreationForm const & rhs);
 		~ShrubberyCreationForm(void);
-
-		void	execute(Bureaucrat const & executor) const;
 
 };
 

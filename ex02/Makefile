@@ -18,6 +18,7 @@ OBJ			= $(SRC:.cpp=.o)
 HEADER		= -I ./
 CC			= c++
 CFLAGS		= -Wall -Wextra -Werror -std=c++98
+DEBUGFLAGS	= -g3 -O0
 RM			= rm -f
 
 all: $(NAME)
@@ -28,6 +29,9 @@ $(NAME): $(OBJ)
 %.o: %.cpp
 	$(CC) $(CFLAGS) $(HEADER) -c $< -o $@
 
+debug: CFLAGS += $(DEBUGFLAGS)
+debug: fclean all
+
 clean:
 	$(RM) $(OBJ)
 
@@ -36,4 +40,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re debug

@@ -20,9 +20,9 @@
 #include <cstdlib>
 #include <fstream>
 
-#define ASSERT_TEST(passed, message) \
-	if (passed) { std::cout << GREEN << "TEST PASSED" << NC << std::endl; } \
-	else { std::cout << RED << "TEST FAILED: " << message << NC << std::endl; }
+#define ASSERT_TEST(expression, message) \
+	if (expression) { std::cout << GREEN << "[TEST PASSED] " << NC << message << std::endl; } \
+	else { std::cout << RED << "[TEST FAILED] " << NC << message << std::endl; }
 
 #define GREY		"\033[0;30m"
 #define RED			"\033[0;31m"
@@ -38,188 +38,130 @@ int	main(void)
 	std::srand(std::time(NULL));
 
     /**************************************************/
-    std::cout << std::endl;
-    std::cout << MAGENTA << "TEST 1 - SHRUBBERY" << NC << std::endl;
+    std::cout << "\n===== TEST 1 - SHRUBBERY =====\n";
 
-    {
-        try
-        {
-            Bureaucrat boss("Boss", 1);
-            ShrubberyCreationForm form("home");
+	{
+		Bureaucrat boss("Boss", 1);
+		ShrubberyCreationForm form("home");
 
-            boss.signForm(form);
-            boss.executeForm(form);
+		boss.signForm(form);
+		boss.executeForm(form);
 
-            std::ifstream file("home_shrubbery");
-            ASSERT_TEST(file.good(), "file should be created");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(false, e.what());
-        }
-    }
+		std::ifstream file("home_shrubbery");
 
-    /**************************************************/
-    std::cout << std::endl;
-    std::cout << MAGENTA << "TEST 2 - ROBOTOMY" << NC << std::endl;
+		ASSERT_TEST(form.getIsSigned() == true,
+			"Shrubbery should be signed");
 
-    {
-        try
-        {
-            Bureaucrat boss("Boss", 1);
-            RobotomyRequestForm form("Marvin");
+		ASSERT_TEST(file.good(),
+			"Shrubbery file should be created");
+	}
 
-            boss.signForm(form);
+	/**************************************************/
 
-            for (int i = 0; i < 3; i++)
-                boss.executeForm(form);
+	std::cout << "\n===== TEST 2 - NOT SIGNED EXECUTION =====\n";
 
-            ASSERT_TEST(true, "robotomy executed multiple times");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(false, e.what());
-        }
-    }
+	{
+		Bureaucrat boss("Boss", 1);
+		ShrubberyCreationForm form("error_test");
 
-    /**************************************************/
-    std::cout << std::endl;
-    std::cout << MAGENTA << "TEST 3 - PRESIDENTIAL PARDON" << NC << std::endl;
+		boss.executeForm(form);
 
-    {
-        try
-        {
-            Bureaucrat boss("President", 1);
-            PresidentialPardonForm form("Alice");
+		ASSERT_TEST(form.getIsSigned() == false,
+			"Form should still be unsigned");
 
-            boss.signForm(form);
-            boss.executeForm(form);
+		std::ifstream file("error_test_shrubbery");
 
-            ASSERT_TEST(true, "pardon executed");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(false, e.what());
-        }
-    }
+		ASSERT_TEST(file.good() == false,
+			"File should NOT be created");
+	}
 
-    /**************************************************/
-    std::cout << std::endl;
-    std::cout << MAGENTA << "TEST 4 - UNSIGNED FORM EXECUTION" << NC << std::endl;
+	/**************************************************/
 
-    {
-        try
-        {
-            Bureaucrat boss("Boss", 1);
-            ShrubberyCreationForm form("error_test");
+	std::cout << "\n===== TEST 3 - LOW GRADE SIGN =====\n";
 
-            boss.executeForm(form);
+	{
+		Bureaucrat intern("Intern", 150);
+		ShrubberyCreationForm form("garden");
 
-            ASSERT_TEST(true, "should not execute unsigned form");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(false, e.what());
-        }
-    }
+		intern.signForm(form);
 
-    /**************************************************/
-    std::cout << std::endl;
-    std::cout << MAGENTA << "TEST 5 - LOW GRADE SIGN" << NC << std::endl;
+		ASSERT_TEST(form.getIsSigned() == false,
+			"Low grade bureaucrat should NOT sign form");
+	}
 
-    {
-        try
-        {
-            Bureaucrat intern("Intern", 150);
-            RobotomyRequestForm form("Marvin");
+	/**************************************************/
 
-            intern.signForm(form);
+	std::cout << "\n===== TEST 4 - ROBOTOMY =====\n";
 
-            ASSERT_TEST(true, "intern should NOT sign");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(false, e.what());
-        }
-    }
+	{
+		Bureaucrat boss("Boss", 1);
+		RobotomyRequestForm form("Bender");
 
-    /**************************************************/
-    std::cout << std::endl;
-    std::cout << MAGENTA << "TEST 6 - LOW GRADE EXECUTE" << NC << std::endl;
+		boss.signForm(form);
+		boss.executeForm(form);
 
-    {
-        try
-        {
-            Bureaucrat boss("Boss", 1);
-            RobotomyRequestForm form("Marvin");
+		ASSERT_TEST(form.getIsSigned() == true,
+			"Robotomy should be signed (execution random)");
+	}
 
-            boss.signForm(form);
+	/**************************************************/
 
-            Bureaucrat intern("Intern", 150);
-            intern.executeForm(form);
+	std::cout << "\n===== TEST 5 - PRESIDENTIAL PARDON =====\n";
 
-            ASSERT_TEST(true, "intern should NOT execute");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(false, e.what());
-        }
-    }
+	{
+		Bureaucrat boss("Boss", 1);
+		PresidentialPardonForm form("Arthur");
 
-    /**************************************************/
-    std::cout << std::endl;
-    std::cout << MAGENTA << "TEST 7 - POLYMORPHISM" << NC << std::endl;
+		boss.signForm(form);
+		boss.executeForm(form);
 
-    {
-        try
-        {
-            Bureaucrat boss("Boss", 1);
+		ASSERT_TEST(form.getIsSigned() == true,
+			"Pardon form should be signed");
+	}
 
-            AForm* forms[3];
+	/**************************************************/
 
-            forms[0] = new ShrubberyCreationForm("A");
-            forms[1] = new RobotomyRequestForm("B");
-            forms[2] = new PresidentialPardonForm("C");
+	std::cout << "\n===== TEST 6 - LOW GRADE EXECUTION =====\n";
 
-            for (int i = 0; i < 3; i++)
-            {
-                boss.signForm(*forms[i]);
-                boss.executeForm(*forms[i]);
-            }
+	{
+		Bureaucrat low("Low", 150);
+		ShrubberyCreationForm form("fail_test");
 
-            for (int i = 0; i < 3; i++)
-                delete forms[i];
+		low.signForm(form);
+		low.executeForm(form);
 
-            ASSERT_TEST(true, "polymorphism works");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(false, e.what());
-        }
-    }
+		ASSERT_TEST(form.getIsSigned() == false,
+			"Low grade bureaucrat should not sign form");
+	}
 
-    /**************************************************/
-    std::cout << std::endl;
-    std::cout << MAGENTA << "TEST 8 - COPY FORM" << NC << std::endl;
+	/**************************************************/
 
-    {
-        try
-        {
-            ShrubberyCreationForm a("copy_test");
-            ShrubberyCreationForm b(a);
+	std::cout << "\n===== TEST 7 - POLYMORPHISM =====\n";
 
-            ASSERT_TEST(a.getName() == b.getName(), "copy name");
-            ASSERT_TEST(a.getGradeToSign() == b.getGradeToSign(), "copy grade sign");
-            ASSERT_TEST(a.getGradeToExecute() == b.getGradeToExecute(), "copy grade exec");
-        }
-        catch (std::exception &e)
-        {
-            ASSERT_TEST(false, e.what());
-        }
-    }
+	{
+		Bureaucrat boss("Boss", 1);
 
-    std::cout << std::endl;
-    std::cout << MAGENTA << "===== END TESTS =====" << NC << std::endl;
+		AForm* f1 = new ShrubberyCreationForm("A");
+		AForm* f2 = new RobotomyRequestForm("B");
+		AForm* f3 = new PresidentialPardonForm("C");
+
+		boss.signForm(*f1);
+		boss.signForm(*f2);
+		boss.signForm(*f3);
+
+		boss.executeForm(*f1);
+		boss.executeForm(*f2);
+		boss.executeForm(*f3);
+
+		ASSERT_TEST(f1->getIsSigned() == true &&
+		            f2->getIsSigned() == true &&
+		            f3->getIsSigned() == true,
+			"All forms should be signed");
+
+		delete f1;
+		delete f2;
+		delete f3;
+	}
 
 	return 0;
 }
