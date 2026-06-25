@@ -23,7 +23,10 @@ ShrubberyCreationForm::ShrubberyCreationForm(std::string const & target)
 }
 
 ShrubberyCreationForm::ShrubberyCreationForm(void)
-	: AForm("shrubbery creation", 145, 137), _target("") {}
+	: AForm("shrubbery creation", 145, 137), _target("")
+{
+	throw std::invalid_argument("Target must be specified");
+}
 
 ShrubberyCreationForm::ShrubberyCreationForm(ShrubberyCreationForm const & src) : AForm(src), _target(src._target)
 {
@@ -44,10 +47,8 @@ ShrubberyCreationForm&	ShrubberyCreationForm::operator=(ShrubberyCreationForm co
 
 ShrubberyCreationForm::~ShrubberyCreationForm(void) {}
 
-void	ShrubberyCreationForm::execute(Bureaucrat const & executor) const
+void	ShrubberyCreationForm::executeAction(void) const
 {
-	checkExecution(executor);
-
 	std::ofstream out((_target + "_shrubbery").c_str());
 	if (!out)
 		throw FileNotAccess();

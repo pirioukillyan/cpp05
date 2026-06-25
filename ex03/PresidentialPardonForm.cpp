@@ -22,7 +22,10 @@ PresidentialPardonForm::PresidentialPardonForm(std::string const & target)
 }
 
 PresidentialPardonForm::PresidentialPardonForm(void)
-	: AForm("presidential pardon", 25, 5), _target("") {}
+	: AForm("presidential pardon", 25, 5), _target("")
+{
+	throw std::invalid_argument("Target must be specified");
+}
 
 PresidentialPardonForm::PresidentialPardonForm(PresidentialPardonForm const & src)
 	: AForm(src), _target(src._target)
@@ -45,8 +48,7 @@ PresidentialPardonForm &	PresidentialPardonForm::operator=(PresidentialPardonFor
 
 PresidentialPardonForm::~PresidentialPardonForm(void) {}
 
-void	PresidentialPardonForm::execute(Bureaucrat const & executor) const
+void	PresidentialPardonForm::executeAction() const
 {
-	checkExecution(executor);
 	std::cout << _target << " has been pardoned by Zaphod Beeblebrox." << std::endl;
 }

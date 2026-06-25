@@ -23,7 +23,10 @@ RobotomyRequestForm::RobotomyRequestForm(std::string const & target)
 }
 
 RobotomyRequestForm::RobotomyRequestForm(void)
-	: AForm("robotomy request", 72, 45), _target("") {}
+	: AForm("robotomy request", 72, 45), _target("")
+{
+	throw std::invalid_argument("Target must be specified");
+}
 
 RobotomyRequestForm::RobotomyRequestForm(RobotomyRequestForm const & src)
     : AForm(src), _target(src._target)
@@ -46,10 +49,8 @@ RobotomyRequestForm &	RobotomyRequestForm::operator=(RobotomyRequestForm const &
 
 RobotomyRequestForm::~RobotomyRequestForm(void) {}
 
-void	RobotomyRequestForm::execute(Bureaucrat const & executor) const
+void	RobotomyRequestForm::executeAction() const
 {
-	checkExecution(executor);
-
 	std::cout << "* drilling noises *" << std::endl;
 	if (std::rand() % 2 == 0)
 		std::cout << _target << " has been robotomized successfully\n";
